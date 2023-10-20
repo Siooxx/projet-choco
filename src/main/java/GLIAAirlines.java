@@ -36,7 +36,7 @@ public class GLIAAirlines {
                 for (IntVar divider : dividers) System.out.print(divider.getValue() + " ");
             }
         }
-        
+
         model.getSolver().printStatistics();
     }
 

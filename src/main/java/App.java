@@ -29,9 +29,7 @@ public class App {
             System.exit(0);
         }
         // Check arguments and options
-        for (Option opt : line.getOptions()) {
-            checkOption(line, opt.getLongOpt());
-        }
+        for (Option opt : line.getOptions()) checkOption(line, opt.getLongOpt());
 
         //Question 1
         for (Instance instance : Instance.values()) {
@@ -46,7 +44,6 @@ public class App {
         //Question 4
         //new GLIAAirlines().solve(inst, timeout, allSolutions);
     }
-
 
     // Add options here
     private static Options configParameters() {
@@ -72,7 +69,6 @@ public class App {
 
         return options;
     }
-
 
     // Check all parameters values
     public static void checkOption(CommandLine line, String option) {
