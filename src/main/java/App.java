@@ -6,9 +6,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import java.util.Arrays;
+
 public class App {
 
-    private static Instance inst;
+    //private static Instance inst;
     private static long timeout = 300000; // five minutes
     private static boolean allSolutions;
 
@@ -17,6 +19,7 @@ public class App {
         final Options options = configParameters();
         final CommandLineParser parser = new DefaultParser();
         final CommandLine line = parser.parse(options, args);
+        int i = 0;
 
         boolean helpMode = line.hasOption("help") || args.length == 0;
 
@@ -31,7 +34,14 @@ public class App {
         }
 
         //Question 1
-        GLIAAirlinesNoConstraints.dividers(inst.nb_dividers, inst.capacity, inst.exits);
+        for (Instance instance : Instance.values()) {
+
+            if(instance.toString().equals("instSujet")) System.out.println("Instance du Sujet :");
+            else System.out.println("Instance " + ++i + " :");
+
+            GLIAAirlinesNoConstraints.dividers(instance.nb_dividers, instance.capacity, instance.exits);
+            System.out.println("\n");
+        }
 
         //Question 4
         //new GLIAAirlines().solve(inst, timeout, allSolutions);
@@ -69,7 +79,7 @@ public class App {
 
         switch (option) {
             case "instance":
-                inst = Instance.valueOf(line.getOptionValue(option));
+                //inst = Instance.valueOf(line.getOptionValue(option));
                 break;
             case "timeout":
                 timeout = Long.parseLong(line.getOptionValue(option));
