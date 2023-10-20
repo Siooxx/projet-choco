@@ -1,4 +1,6 @@
 import org.chocosolver.solver.Model;
+import org.chocosolver.solver.Solution;
+import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
 
 import static org.chocosolver.solver.search.strategy.Search.minDomLBSearch;
@@ -11,13 +13,31 @@ public class GLIAAirlines {
 
     public void solve(Instance inst, long timeout, boolean allSolutions) {
 
+        // Création du modèle
         buildModel(inst);
-        model.getSolver().limitTime(timeout);
 
-        StringBuilder st = new StringBuilder(
-                String.format(model.getName() + "-- %s\n", inst.nb_dividers, " X ", inst.capacity));
+        //Création du Solver
+        Solver solver = model.getSolver();
 
-        //solver call!
+        // Limitation temporelle de la recherche du Solver
+        solver.limitTime(timeout);
+
+        // Affichage de toutes les solutions
+        if(allSolutions)
+            while(solver.solve()){
+                System.out.print("Solutions trouvées : ");
+                for (IntVar divider : dividers) System.out.print(divider.getValue() + " ");
+            }
+        // Affichage d'une unique solution
+        else {
+            Solution s = solver.findSolution();
+            if(s != null) {
+                System.out.print("Solution trouvée : ");
+                for (IntVar divider : dividers) System.out.print(divider.getValue() + " ");
+            }
+        }
+
+        // Affichage d'une unique solution
 
         model.getSolver().printStatistics();
     }
