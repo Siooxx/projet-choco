@@ -20,7 +20,7 @@ public class GLIAAirlines {
         // Création du modèle
         buildModel(inst);
 
-        //Création du Solver
+        // Création du Solver
         Solver solver = model.getSolver();
 
         // Limitation temporelle de la recherche du Solver
@@ -63,42 +63,45 @@ public class GLIAAirlines {
 
     public void buildModel(Instance inst) {
 
-        // A new model instance
+        // Nouvelle Instance du Modèle
         model = new Model("Aircraft Class Divider");
 
-        // Variable
-        int n = inst.nb_dividers;
-        int m = inst.capacity;
-        int[] exits = inst.exits;
+        // VARIABLES
+        int n = inst.nb_dividers; // Nombre de séparateurs
+        int m = inst.capacity; // Nombre de blocs
+        int[] exits = inst.exits; // Tableau des sorties de secours
+        // Tableau des distances entre les séparateurs
         IntVar[] diffs = model.intVarArray("d", (n * (n - 1)) / 2, 0, m, false);
+        // Tableau spécifiant les séparateurs
         dividers = model.intVarArray("dividers", n, 0, m, false);
 
-        // Contraintes
+        // CONTRAINTES
+        // Placement du premier et dernier séparateurs
         model.arithm(dividers[0], "=", 0).post();
-
-        for (int i = 1; i < n; i++) model.arithm(dividers[i], ">", 1).post();
-
         model.arithm(dividers[n - 1], "=", m).post();
 
+        // Aucun séparateur n'est placé au bloc 1
+        for (int i = 1; i < n; i++) model.arithm(dividers[i], ">", 1).post();
+
+        // Aucun séparateur n'est placé au même endroit qu'une sortie
         for (int i = 0; i < inst.nb_exits(); i++)
             for (int j = 1; j < n - 1; j++)
                 model.arithm(dividers[j], "!=", exits[i]).post();
 
-        for (int i = 0, k = 0; i < n - 1; i++) {
-            // // the mark variables are ordered
+        // Toutes distances entre les séparateurs doivent être unique
+        for (int i = 0, k = 0 ; i < n - 1; i++) {
+            // Les variables des séparateurs sont ordonnées
             model.arithm(dividers[i + 1], ">", dividers[i]).post();
             for (int j = i + 1; j < n; j++, k++) {
-                // declare the distance constraint between two distinct marks
-                // redundant constraints on bounds of diffs[k]
+                // Déclaration de la contrainte de distance entre deux séparateurs distincts
                 model.arithm(diffs[k], ">=", (j - i) * (j - i + 1) / 2).post();
                 model.arithm(diffs[k], "<=", dividers[n - 1], "-", ((n - 1 - j + i) * (n - j + i)) / 2).post();
                 model.scalar(new IntVar[]{dividers[j], dividers[i]}, new int[]{1, -1}, "=", diffs[k]).post();
 
             }
         }
-
+        // Toutes les valeurs dans "diffs" doivent être différentes
         model.allDifferent(diffs).post();
-
     }
 
     public void configureSearch() {
