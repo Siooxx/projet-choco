@@ -19,47 +19,41 @@ public class GLIAAirlines {
 
     public void solve(Instance inst, long timeout, boolean allSolutions) {
 
-        // Création du modèle
-        buildModel(inst);
+        buildModel(inst); // Création du modèle
+        Solver solver = model.getSolver(); // Création du Solver
+        solver.limitTime(timeout); // Limitation temporelle de la recherche du Solver
 
-        // Création du Solver
-        Solver solver = model.getSolver();
-
-        // Limitation temporelle de la recherche du Solver
-        solver.limitTime(timeout);
-
-        // Affichage de toutes les solutions
+        // Affichage des instances
         try {
             Field field = inst.getClass().getField(inst.name());
             int index = Arrays.asList(inst.getClass().getFields()).indexOf(field);
-            String id = field.getName().equals("instSujet") ? "base.enums.Instance du Sujet" : "base.enums.Instance N " + String.valueOf(index + 1);
-            System.out.print(id + " | ");
+            System.out.print("Instance N°" + String.valueOf(index + 1) + " | ");
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
 
-
+        // Affichage de toutes les solutions
         if (allSolutions) {
-            System.out.print("Solutions trouvées : \n");
+            System.out.print("Solution(s) trouvée(s) : \n");
             while (solver.solve()) {
                 System.out.print("[ ");
-                for (IntVar divider : dividers) {
-                    System.out.print(divider.getValue() + " ");
-                }
+                for (IntVar divider : dividers) System.out.print(divider.getValue() + " ");
                 System.out.print("]\n");
             }
+            System.out.print("\n");
         }
 
         // Affichage d'une unique solution
         else {
             Solution s = solver.findSolution();
             if (s != null) {
-                System.out.print("Solution trouvée : ");
+                System.out.print("Solution trouvée : [ ");
                 for (IntVar divider : dividers) System.out.print(divider.getValue() + " ");
-                System.out.println();
+                System.out.print("]\n\n");
             }
         }
+
         model.getSolver().printStatistics();
     }
 

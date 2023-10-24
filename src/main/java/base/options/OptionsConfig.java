@@ -9,12 +9,12 @@ public class OptionsConfig {
     public static Options configParameters() {
         final Options options = new Options();
 
-        options.addOption(createOption("h", "help", "Display help message"));
-        options.addOption(createOptionWithArg("i", "instance", "aircraft instance (#dividers, capacity, exit doors) - from inst1 to inst9"));
-        options.addOption(createOption("a", "all", "all solutions"));
-        options.addOption(createOptionWithArg("t", "timeout", "Set the timeout limit to the specified time"));
-        options.addOption(createOption("c", "with-constraint", "Run the instance with the choco constraint model"));
-        options.addOption(createOption("d", "default", "Run all the instance without the constraint model"));
+        options.addOption(createOption("h", "help", "Affiche le message d'aide"));
+        options.addOption(createOptionWithArg("i", "instance", "Instance d'avion (séparateurs, capacité, portes de sortie) - de inst1 à inst9"));
+        options.addOption(createOption("a", "all", "Toutes les solutions"));
+        options.addOption(createOptionWithArg("t", "timeout", "Définir la limite de temps à la durée spécifiée"));
+        options.addOption(createOption("c", "with-constraint", "Exécuter l'instance avec le modèle de contrainte Choco"));
+        options.addOption(createOption("d", "default", "Exécuter toutes les instances sans le modèle de contrainte"));
 
         return options;
     }

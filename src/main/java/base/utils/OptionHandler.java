@@ -10,9 +10,7 @@ public class OptionHandler {
 
     private final CommandLine line;
 
-    public OptionHandler(CommandLine line) {
-        this.line = line;
-    }
+    public OptionHandler(CommandLine line) { this.line = line; }
 
     public void handleOptions() {
         if (line.hasOption("with-constraint")) handleWithConstraintOption();
@@ -26,10 +24,8 @@ public class OptionHandler {
         } else if (line.hasOption("instance")) {
             (new GLIAAirlines()).solve(Instance.valueOf(line.getOptionValue("instance")), Main.timeout, Main.allSolutions);
         } else {
-            for (Instance instance : Instance.values()) {
+            for (Instance instance : Instance.values())
                 (new GLIAAirlines()).solve(instance, Main.timeout, Main.allSolutions);
-                System.out.println("\n");
-            }
         }
     }
 

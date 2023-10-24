@@ -15,7 +15,7 @@ public enum Instance {
 
     inst7(13, 200, new int[]{50, 100, 150}),
 
-    //inst8(14, 125, new int[]{50, 100}),
+    inst8(14, 125, new int[]{50, 100}),
 
     inst9(5, 11, new int[]{3}),
     ;

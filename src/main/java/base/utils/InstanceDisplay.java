@@ -9,9 +9,7 @@ public class InstanceDisplay {
 
     private final CommandLine line;
 
-    public InstanceDisplay(CommandLine line) {
-        this.line = line;
-    }
+    public InstanceDisplay(CommandLine line) { this.line = line; }
 
     public void display() {
         if (line.hasOption("instance")) displayInstanceResultWithoutConstraints();
