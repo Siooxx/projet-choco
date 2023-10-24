@@ -20,6 +20,7 @@ public class App {
         final Options options = configParameters();
         final CommandLineParser parser = new DefaultParser();
         final CommandLine line = parser.parse(options, args);
+        GLIAAirlines GLIAAirlines = new GLIAAirlines();
         int i = 0;
 
         boolean helpMode = line.hasOption("help") || args.length == 0;
@@ -29,42 +30,65 @@ public class App {
             formatter.printHelp("cocoAirlines", options, true);
             System.exit(0);
         }
-        // Check arguments and options
+
+        // Vérifie les arguments et les options
         for (Option opt : line.getOptions())
             checkOption(line, opt.getLongOpt());
 
-        if (line.hasOption("all")) {
-            if (line.hasOption("with-constraint")) {
+        // Affichage en fonction des options
+        // Option -c
+        if (line.hasOption("with-constraint")) {
+            if (line.hasOption("default")){
+                System.err.println("L'option -d ne peut être utilisé avec l'option -c !");
+                System.exit(0);
+            }
+            // Option -c et -i (avec possiblement -all)
+            else if (line.hasOption("instance"))
+                (new GLIAAirlines()).solve(Instance.valueOf(line.getOptionValue("instance")), timeout, allSolutions);
+            // Option -c sans -i (avec possiblement -all)
+            else {
                 for (Instance instance : Instance.values()) {
                     (new GLIAAirlines()).solve(instance, timeout, allSolutions);
                     System.out.println("\n");
                 }
-            } else {
-                System.err.println("The -a flag is only available when the -c flag is specified.");
+            }
+        // Option sans -c
+        } else {
+            // Option -all
+            System.out.println("je suis la");
+            if (line.hasOption("all")) {
+                System.err.println("L'option -a doit être utilisé avec l'option -c !");
                 System.exit(0);
+            }
+            // Option sans -c et -all
+            else {
+                // Option sans -c et -all avec -i
+                if (line.hasOption("instance")){
+                    final int nb_dividers = Instance.valueOf(line.getOptionValue("instance")).nb_dividers
+                            , capacity = Instance.valueOf(line.getOptionValue("instance")).capacity;
+                    final int[] exits = Instance.valueOf(line.getOptionValue("instance")).exits;
+
+                    System.out.println("Résultat de l'instance "
+                            + line.getOptionValue("instance").charAt(4)
+                            + " sans Programmation par Contraintes :");
+
+                    GLIAAirlinesNoConstraints.dividers(nb_dividers, capacity, exits);
+                }
+                // Option sans -c, -all et -i donc -d
+                else {
+                    System.out.println("Affichage de toutes les instances sans programmation par contrainte :\n");
+                    for (Instance instance : Instance.values()) {
+                        System.out.println("Instance " + ++i + " :");
+                        GLIAAirlinesNoConstraints.dividers(instance.nb_dividers, instance.capacity, instance.exits);
+                        System.out.println("\n");
+                    }
+                }
             }
         }
 
-        //Question 1
-        /*for (Instance instance : Instance.values()) {
-
-            if (instance.toString().equals("instSujet")) System.out.println("Instance du Sujet :");
-            else System.out.println("Instance " + ++i + " :");
-
-            GLIAAirlinesNoConstraints.dividers(instance.nb_dividers, instance.capacity, instance.exits);
-            System.out.println("\n");
-        }*/
-
-        GLIAAirlines GLIAAirlines = new GLIAAirlines();
-
-        //Question 4
-        /*for (Instance instance : Instance.values()) {
-            GLIAAirlines.solve(instance, timeout, allSolutions);
-            System.out.println("\n");
-        }*/
     }
 
-    // Add options here
+    // Toutes les options
     private static Options configParameters() {
 
         final Option helpFileOption = Option
@@ -78,7 +102,7 @@ public class App {
                 .longOpt("instance")
                 .hasArg(true)
                 .argName("aircraft instance")
-                .desc("aircraft instance (#dividers, capacity, exit doors) - from inst1 to inst10").required(false)
+                .desc("aircraft instance (#dividers, capacity, exit doors) - from inst1 to inst9").required(false)
                 .build();
 
         final Option allsolOption = Option
@@ -104,13 +128,22 @@ public class App {
                 .argName("resolve instance with constraint model")
                 .build();
 
-        // Create the options list
+        final Option defaultOption = Option
+                .builder("d")
+                .longOpt("default")
+                .hasArg(false)
+                .desc("Run all the instance without the constraint model")
+                .argName("resolve instance without constraint model")
+                .build();
+
+        // Création de la liste d'option
         final Options options = new Options();
         options.addOption(instOption);
         options.addOption(allsolOption);
         options.addOption(limitOption);
         options.addOption(helpFileOption);
         options.addOption(noConstraintOpt);
+        options.addOption(defaultOption);
 
         return options;
     }
@@ -130,6 +163,8 @@ public class App {
                 break;
             case "all":
                 allSolutions = true;
+                break;
+            case "default":
                 break;
             default: {
                 System.err.println("Bad parameter: " + option);

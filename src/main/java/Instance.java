@@ -15,7 +15,7 @@ enum Instance {
 
     //inst8(14, 125, new int[]{50, 100}),
 
-    instSujet(5, 11, new int[]{3}),
+    inst9(5, 11, new int[]{3}),
     ;
 
     final int nb_dividers, capacity;
