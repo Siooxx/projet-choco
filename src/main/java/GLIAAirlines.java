@@ -55,7 +55,7 @@ public class GLIAAirlines {
         int n = inst.nb_dividers;
         int m = inst.capacity;
         int[] exits = inst.exits;
-        IntVar[] diffs = new IntVar[n - 1];
+        IntVar[] diffs = model.intVarArray("d", (n * (n - 1)) / 2, 0, m, false);
         dividers = model.intVarArray("dividers", n, 0, m, false);
 
         // Contraintes
@@ -66,13 +66,22 @@ public class GLIAAirlines {
         model.arithm(dividers[n - 1], "=", m).post();
 
         for (int i = 0; i < inst.nb_exits(); i++)
-            for (int j = 0; j < n; j++)
+            for (int j = 1; j < n-1; j++)
                 model.arithm(dividers[j], "!=", exits[i]).post();
 
-        for (int i = 0; i < n - 1; i++) {
-            diffs[i] = model.intVar("diff_" + i, 1, m, false);
-            model.arithm(diffs[i], "=", dividers[i + 1], "-", dividers[i]).post();
+        for (int i = 0, k = 0 ; i < n - 1; i++) {
+            // // the mark variables are ordered
+            model.arithm(dividers[i + 1], ">", dividers[i]).post();
+            for (int j = i + 1; j < n; j++, k++) {
+                // declare the distance constraint between two distinct marks
+                // redundant constraints on bounds of diffs[k]
+                model.arithm(diffs[k], ">=", (j - i) * (j - i + 1) / 2).post();
+                model.arithm(diffs[k], "<=", dividers[n - 1], "-", ((n - 1 - j + i) * (n - j + i)) / 2).post();
+                model.scalar(new IntVar[]{dividers[j], dividers[i]}, new int[]{1, -1}, "=", diffs[k]).post();
+
+            }
         }
+
         model.allDifferent(diffs).post();
 
     }
