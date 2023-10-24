@@ -10,9 +10,9 @@ import java.util.Arrays;
 
 public class App {
 
-    //private static Instance inst;
+    private static Instance inst;
     private static long timeout = 300000; // five minutes
-    private static boolean allSolutions;
+    private static boolean allSolutions = true;
 
     public static void main(String[] args) throws ParseException {
 
@@ -41,8 +41,18 @@ public class App {
             System.out.println("\n");
         }
 
+        GLIAAirlines GLIAAirlines = new GLIAAirlines();
+
         //Question 4
-        //new GLIAAirlines().solve(inst, timeout, allSolutions);
+        for (Instance instance : Instance.values()) {
+
+            if(instance.toString().equals("instSujet")) System.out.println("Instance du Sujet :");
+            else System.out.println("Instance " + ++i + " :");
+
+            GLIAAirlines.solve(instance, timeout, allSolutions);
+            System.out.println("\n");
+            break;
+        }
     }
 
     // Add options here
