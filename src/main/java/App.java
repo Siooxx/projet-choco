@@ -10,18 +10,14 @@ import java.util.Arrays;
 
 public class App {
 
-    private static Instance inst;
-    private static long timeout = 300000; // five minutes
+    private static long timeout = 300000; // 5 minutes
     private static boolean allSolutions = false;
-    private static boolean withChoco = false;
 
     public static void main(String[] args) throws ParseException {
 
         final Options options = configParameters();
         final CommandLineParser parser = new DefaultParser();
         final CommandLine line = parser.parse(options, args);
-        GLIAAirlines GLIAAirlines = new GLIAAirlines();
-        int i = 0;
 
         boolean helpMode = line.hasOption("help") || args.length == 0;
 
@@ -55,7 +51,6 @@ public class App {
         // Option sans -c
         } else {
             // Option -all
-            System.out.println("je suis la");
             if (line.hasOption("all")) {
                 System.err.println("L'option -a doit être utilisé avec l'option -c !");
                 System.exit(0);
@@ -77,6 +72,7 @@ public class App {
                 // Option sans -c, -all et -i donc -d
                 else {
                     System.out.println("Affichage de toutes les instances sans programmation par contrainte :\n");
+                    int i = 0;
                     for (Instance instance : Instance.values()) {
                         System.out.println("Instance " + ++i + " :");
                         GLIAAirlinesNoConstraints.dividers(instance.nb_dividers, instance.capacity, instance.exits);
@@ -85,7 +81,6 @@ public class App {
                 }
             }
         }
-
     }
 
     // Toutes les options
@@ -153,18 +148,14 @@ public class App {
 
         switch (option) {
             case "instance":
-                inst = Instance.valueOf(line.getOptionValue(option));
+            case "with-constraint":
+            case "default":
                 break;
             case "timeout":
                 timeout = Long.parseLong(line.getOptionValue(option));
                 break;
-            case "with-constraint":
-                withChoco = true;
-                break;
             case "all":
                 allSolutions = true;
-                break;
-            case "default":
                 break;
             default: {
                 System.err.println("Bad parameter: " + option);
