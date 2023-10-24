@@ -21,18 +21,13 @@ public class OptionHandler {
         if (line.hasOption("default")) {
             System.err.println("L'option -d ne peut être utilisé avec l'option -c !");
             System.exit(0);
-        } else if (line.hasOption("instance")) {
-            (new GLIAAirlines()).solve(Instance.valueOf(line.getOptionValue("instance")), Main.timeout, Main.allSolutions);
-        } else {
-            for (Instance instance : Instance.values())
-                (new GLIAAirlines()).solve(instance, Main.timeout, Main.allSolutions);
-        }
+        } else new base.utils.InstanceDisplay(line).displayWithConstraints();
     }
 
     private void handleWithoutConstraintOption() {
         if (line.hasOption("all")) {
             System.err.println("L'option -a doit être utilisé avec l'option -c !");
             System.exit(0);
-        } else new base.utils.InstanceDisplay(line).display();
+        } else new base.utils.InstanceDisplay(line).displayWithoutConstraints();
     }
 }

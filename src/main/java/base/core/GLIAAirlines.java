@@ -23,16 +23,6 @@ public class GLIAAirlines {
         Solver solver = model.getSolver(); // Création du Solver
         solver.limitTime(timeout); // Limitation temporelle de la recherche du Solver
 
-        // Affichage des instances
-        try {
-            Field field = inst.getClass().getField(inst.name());
-            int index = Arrays.asList(inst.getClass().getFields()).indexOf(field);
-            System.out.print("Instance N°" + String.valueOf(index + 1) + " | ");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
         // Affichage de toutes les solutions
         if (allSolutions) {
             System.out.print("Solution(s) trouvée(s) : \n");
