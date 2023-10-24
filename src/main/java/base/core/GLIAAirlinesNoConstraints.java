@@ -1,3 +1,5 @@
+package base.core;
+
 import java.util.Arrays;
 
 public class GLIAAirlinesNoConstraints {

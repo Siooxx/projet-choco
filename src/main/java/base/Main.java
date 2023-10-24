@@ -1,3 +1,6 @@
+package base;
+
+import base.utils.OptionHandler;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -6,12 +9,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.util.Arrays;
+public class Main {
 
-public class App {
-
-    private static long timeout = 300000; // 5 minutes
-    private static boolean allSolutions = false;
+    public static long timeout = 300000; // 5 minutes
+    public static boolean allSolutions = false;
 
     public static void main(String[] args) throws ParseException {
 
@@ -28,59 +29,10 @@ public class App {
         }
 
         // Vérifie les arguments et les options
-        for (Option opt : line.getOptions())
-            checkOption(line, opt.getLongOpt());
+        for (Option opt : line.getOptions()) checkOption(line, opt.getLongOpt());
 
-        // Affichage en fonction des options
-        // Option -c
-        if (line.hasOption("with-constraint")) {
-            if (line.hasOption("default")){
-                System.err.println("L'option -d ne peut être utilisé avec l'option -c !");
-                System.exit(0);
-            }
-            // Option -c et -i (avec possiblement -all)
-            else if (line.hasOption("instance"))
-                (new GLIAAirlines()).solve(Instance.valueOf(line.getOptionValue("instance")), timeout, allSolutions);
-            // Option -c sans -i (avec possiblement -all)
-            else {
-                for (Instance instance : Instance.values()) {
-                    (new GLIAAirlines()).solve(instance, timeout, allSolutions);
-                    System.out.println("\n");
-                }
-            }
-        // Option sans -c
-        } else {
-            // Option -all
-            if (line.hasOption("all")) {
-                System.err.println("L'option -a doit être utilisé avec l'option -c !");
-                System.exit(0);
-            }
-            // Option sans -c et -all
-            else {
-                // Option sans -c et -all avec -i
-                if (line.hasOption("instance")){
-                    final int nb_dividers = Instance.valueOf(line.getOptionValue("instance")).nb_dividers
-                            , capacity = Instance.valueOf(line.getOptionValue("instance")).capacity;
-                    final int[] exits = Instance.valueOf(line.getOptionValue("instance")).exits;
-
-                    System.out.println("Résultat de l'instance "
-                            + line.getOptionValue("instance").charAt(4)
-                            + " sans Programmation par Contraintes :");
-
-                    GLIAAirlinesNoConstraints.dividers(nb_dividers, capacity, exits);
-                }
-                // Option sans -c, -all et -i donc -d
-                else {
-                    System.out.println("Affichage de toutes les instances sans programmation par contrainte :\n");
-                    int i = 0;
-                    for (Instance instance : Instance.values()) {
-                        System.out.println("Instance " + ++i + " :");
-                        GLIAAirlinesNoConstraints.dividers(instance.nb_dividers, instance.capacity, instance.exits);
-                        System.out.println("\n");
-                    }
-                }
-            }
-        }
+        // Gestion et Affichage
+        new OptionHandler(line).handleOptions();
     }
 
     // Toutes les options

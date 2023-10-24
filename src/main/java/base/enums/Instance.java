@@ -1,4 +1,6 @@
-enum Instance {
+package base.enums;
+
+public enum Instance {
     inst1(6, 18, new int[]{4, 11}),
 
     inst2(7, 25, new int[]{7}),
@@ -18,8 +20,8 @@ enum Instance {
     inst9(5, 11, new int[]{3}),
     ;
 
-    final int nb_dividers, capacity;
-    final int[] exits;
+    final public int nb_dividers, capacity;
+    final public int[] exits;
 
     Instance(int nbd, int c, int[] e) {
         this.nb_dividers = nbd;
@@ -27,11 +29,7 @@ enum Instance {
         this.exits = e;
     }
 
-    int nb_exits() {
-        return exits.length;
-    }
+    public int nb_exits() { return exits.length; }
 
-    int exit(int at) {
-        return exits[at];
-    }
+    public int exit(int at) { return exits[at]; }
 }

@@ -1,3 +1,6 @@
+package base.core;
+
+import base.enums.Instance;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
@@ -5,7 +8,6 @@ import org.chocosolver.solver.variables.IntVar;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.chocosolver.solver.search.strategy.Search.minDomLBSearch;
 import static org.chocosolver.util.tools.ArrayUtils.append;
@@ -30,7 +32,7 @@ public class GLIAAirlines {
         try {
             Field field = inst.getClass().getField(inst.name());
             int index = Arrays.asList(inst.getClass().getFields()).indexOf(field);
-            String id = field.getName().equals("instSujet") ? "Instance du Sujet" : "Instance N " + String.valueOf(index + 1);
+            String id = field.getName().equals("instSujet") ? "base.enums.Instance du Sujet" : "base.enums.Instance N " + String.valueOf(index + 1);
             System.out.print(id + " | ");
         } catch (NoSuchFieldException e) {
             e.printStackTrace();

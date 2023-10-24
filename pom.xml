@@ -5,7 +5,7 @@
     <groupId>fr.lirmm.coconut</groupId>
     <artifactId>GLIA-Airlines</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>GLIAAirlines</name>
+    <name>base.core.GLIAAirlines</name>
 
     <dependencies>
 
