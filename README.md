@@ -34,6 +34,6 @@ Ce projet a été effectué dans le cadre de l'UE Intelligence Artificielle pour
 
 ## Contraintes liées aux Options
 
-- **-d** : Cette option doit être utilisé seule
-- **-a** : Cette option doit être utilisé seulement si l'option **-c** est présente
+- **`-d`** : Cette option doit être utilisé seule
+- **`-a`** : Cette option doit être utilisé seulement si l'option **-c** est présente
 
