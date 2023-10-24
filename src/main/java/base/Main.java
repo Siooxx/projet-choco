@@ -1,5 +1,6 @@
 package base;
 
+import base.options.OptionsChecker;
 import base.utils.OptionHandler;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -19,17 +20,22 @@ public class Main {
         final Options options = configParameters();
         final CommandLineParser parser = new DefaultParser();
         final CommandLine line = parser.parse(options, args);
-
-        boolean helpMode = line.hasOption("help") || args.length == 0;
-
-        if (helpMode) {
+        
+        if (line.hasOption("help") || args.length == 0) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("cocoAirlines", options, true);
             System.exit(0);
         }
 
+        // Création de l'instance OptionChecker avec des valeurs initiales
+        OptionsChecker optionChecker = new OptionsChecker(timeout, false);
+
         // Vérifie les arguments et les options
-        for (Option opt : line.getOptions()) checkOption(line, opt.getLongOpt());
+        for (Option opt : line.getOptions()) optionChecker.checkOption(line, opt.getLongOpt());
+
+        // Récupération des deux variables
+        timeout = optionChecker.getTimeout();
+        allSolutions= optionChecker.getAllSolutions();
 
         // Gestion et Affichage
         new OptionHandler(line).handleOptions();
