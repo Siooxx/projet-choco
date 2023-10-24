@@ -3,6 +3,10 @@ import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.IntVar;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.chocosolver.solver.search.strategy.Search.minDomLBSearch;
 import static org.chocosolver.util.tools.ArrayUtils.append;
 
@@ -23,26 +27,37 @@ public class GLIAAirlines {
         solver.limitTime(timeout);
 
         // Affichage de toutes les solutions
-        if (allSolutions){
+        try {
+            Field field = inst.getClass().getField(inst.name());
+            int index = Arrays.asList(inst.getClass().getFields()).indexOf(field);
+            String id = field.getName().equals("instSujet") ? "Instance du Sujet" : "Instance N " + String.valueOf(index + 1);
+            System.out.print(id + " | ");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+
+        if (allSolutions) {
             System.out.print("Solutions trouvées : \n");
             while (solver.solve()) {
-                System.out.print("[");
-                for (IntVar divider : dividers){
-                    System.out.print(divider.getValue() + ", ");
+                System.out.print("[ ");
+                for (IntVar divider : dividers) {
+                    System.out.print(divider.getValue() + " ");
                 }
                 System.out.print("]\n");
             }
         }
 
         // Affichage d'une unique solution
-        else{
+        else {
             Solution s = solver.findSolution();
             if (s != null) {
                 System.out.print("Solution trouvée : ");
                 for (IntVar divider : dividers) System.out.print(divider.getValue() + " ");
+                System.out.println();
             }
         }
-
         model.getSolver().printStatistics();
     }
 
@@ -66,10 +81,10 @@ public class GLIAAirlines {
         model.arithm(dividers[n - 1], "=", m).post();
 
         for (int i = 0; i < inst.nb_exits(); i++)
-            for (int j = 1; j < n-1; j++)
+            for (int j = 1; j < n - 1; j++)
                 model.arithm(dividers[j], "!=", exits[i]).post();
 
-        for (int i = 0, k = 0 ; i < n - 1; i++) {
+        for (int i = 0, k = 0; i < n - 1; i++) {
             // // the mark variables are ordered
             model.arithm(dividers[i + 1], ">", dividers[i]).post();
             for (int j = i + 1; j < n; j++, k++) {

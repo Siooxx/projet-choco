@@ -12,7 +12,8 @@ public class App {
 
     private static Instance inst;
     private static long timeout = 300000; // five minutes
-    private static boolean allSolutions = true;
+    private static boolean allSolutions = false;
+    private static boolean withChoco = false;
 
     public static void main(String[] args) throws ParseException {
 
@@ -29,46 +30,79 @@ public class App {
             System.exit(0);
         }
         // Check arguments and options
-        for (Option opt : line.getOptions()) checkOption(line, opt.getLongOpt());
+        for (Option opt : line.getOptions())
+            checkOption(line, opt.getLongOpt());
+
+        if (line.hasOption("all")) {
+            if (line.hasOption("with-constraint")) {
+                for (Instance instance : Instance.values()) {
+                    (new GLIAAirlines()).solve(instance, timeout, allSolutions);
+                    System.out.println("\n");
+                }
+            } else {
+                System.err.println("The -a flag is only available when the -c flag is specified.");
+                System.exit(0);
+            }
+        }
 
         //Question 1
-        for (Instance instance : Instance.values()) {
+        /*for (Instance instance : Instance.values()) {
 
-            if(instance.toString().equals("instSujet")) System.out.println("Instance du Sujet :");
+            if (instance.toString().equals("instSujet")) System.out.println("Instance du Sujet :");
             else System.out.println("Instance " + ++i + " :");
 
             GLIAAirlinesNoConstraints.dividers(instance.nb_dividers, instance.capacity, instance.exits);
             System.out.println("\n");
-        }
+        }*/
 
         GLIAAirlines GLIAAirlines = new GLIAAirlines();
 
         //Question 4
-        for (Instance instance : Instance.values()) {
-
-            if(instance.toString().equals("instSujet")) System.out.println("Instance du Sujet :");
-            else System.out.println("Instance " + ++i + " :");
-
+        /*for (Instance instance : Instance.values()) {
             GLIAAirlines.solve(instance, timeout, allSolutions);
             System.out.println("\n");
-            break;
-        }
+        }*/
     }
 
     // Add options here
     private static Options configParameters() {
 
-        final Option helpFileOption = Option.builder("h").longOpt("help").desc("Display help message").build();
+        final Option helpFileOption = Option
+                .builder("h")
+                .longOpt("help")
+                .desc("Display help message")
+                .build();
 
-        final Option instOption = Option.builder("i").longOpt("instance").hasArg(true).argName("aircraft instance")
+        final Option instOption = Option
+                .builder("i")
+                .longOpt("instance")
+                .hasArg(true)
+                .argName("aircraft instance")
                 .desc("aircraft instance (#dividers, capacity, exit doors) - from inst1 to inst10").required(false)
                 .build();
 
-        final Option allsolOption = Option.builder("a").longOpt("all").hasArg(false).desc("all solutions")
-                .required(false).build();
+        final Option allsolOption = Option
+                .builder("a")
+                .longOpt("all")
+                .hasArg(false)
+                .desc("all solutions")
+                .required(false)
+                .build();
 
-        final Option limitOption = Option.builder("t").longOpt("timeout").hasArg(true).argName("timeout in ms")
+        final Option limitOption = Option
+                .builder("t")
+                .longOpt("timeout")
+                .hasArg(true)
+                .argName("timeout in ms")
                 .desc("Set the timeout limit to the specified time").required(false).build();
+
+        final Option noConstraintOpt = Option
+                .builder("c")
+                .longOpt("with-constraint")
+                .hasArg(false)
+                .desc("Run the instance with the choco constraint model")
+                .argName("resolve instance with constraint model")
+                .build();
 
         // Create the options list
         final Options options = new Options();
@@ -76,6 +110,7 @@ public class App {
         options.addOption(allsolOption);
         options.addOption(limitOption);
         options.addOption(helpFileOption);
+        options.addOption(noConstraintOpt);
 
         return options;
     }
@@ -85,10 +120,13 @@ public class App {
 
         switch (option) {
             case "instance":
-                //inst = Instance.valueOf(line.getOptionValue(option));
+                inst = Instance.valueOf(line.getOptionValue(option));
                 break;
             case "timeout":
                 timeout = Long.parseLong(line.getOptionValue(option));
+                break;
+            case "with-constraint":
+                withChoco = true;
                 break;
             case "all":
                 allSolutions = true;
