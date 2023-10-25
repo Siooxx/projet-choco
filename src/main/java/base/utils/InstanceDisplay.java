@@ -22,6 +22,12 @@ public class InstanceDisplay {
     }
 
     public void displayWithConstraints() {
+
+        if (line.hasOption("instance")) displayInstanceResultWithConstraints();
+        else displayAllInstancesWithConstraints();
+    }
+
+    private void displayInstanceResultWithConstraints() {
         // Affichage du string "Instance N°X |"
         try {
             Instance inst = Instance.valueOf(line.getOptionValue("instance"));
@@ -33,17 +39,14 @@ public class InstanceDisplay {
             throw new RuntimeException(e);
         }
 
-        if (line.hasOption("instance")) displayInstanceResultWithConstraints();
-        else displayAllInstancesWithConstraints();
-    }
-
-    private void displayInstanceResultWithConstraints() {
         (new GLIAAirlines()).solve(Instance.valueOf(line.getOptionValue("instance")), Main.timeout, Main.allSolutions);
     }
 
     private void displayAllInstancesWithConstraints() {
-        for (Instance instance : Instance.values())
+        for (Instance instance : Instance.values()){
+            System.out.print("Instance N°" + instance.toString().charAt(4) + " | ");
             (new GLIAAirlines()).solve(instance, Main.timeout, Main.allSolutions);
+        }
     }
 
     private void displayInstanceResultWithoutConstraints() {

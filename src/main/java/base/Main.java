@@ -13,8 +13,8 @@ import org.apache.commons.cli.ParseException;
 
 public class Main {
 
-    // Timeout de 5 minutes
-    public static long timeout = 300000;
+    // Timeout de 1 minutes
+    public static long timeout = 60000;
     // Booléan pour afficher ou non toutes les solutions
     public static boolean allSolutions = false;
 

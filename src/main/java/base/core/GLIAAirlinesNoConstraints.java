@@ -1,19 +1,36 @@
 package base.core;
 
+import base.Main;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GLIAAirlinesNoConstraints {
 
     public static void dividers(int n, int m, int[] exits) {
 
+        // Tableau des emplacements des séparateurs
         int[] separators = new int[n];
+        // Initialisation d'un timer
+        final AtomicBoolean timeoutReached = new AtomicBoolean(false);
+
+        // Création d'un ScheduledExecutorService
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
+        // Mettre en place une tâche pour être exécutée après le timeout défini
+        executor.schedule(new Runnable() {
+            @Override
+            public void run() { timeoutReached.set(true);}
+        }, Main.timeout, TimeUnit.MILLISECONDS);
 
         // Placement du premier et dernier séparateur
         separators[0] = 0;
         separators[n - 1] = m;
 
         // Début en position 2 pour avoir les deux blocs de la première classe
-        if(placeSeparators(1, 2, separators, exits, m))
+        if(!timeoutReached.get() && placeSeparators(1, 2, separators, exits, m))
             System.out.print(Arrays.toString(separators));
 
         else System.out.println("Pas de Solution !");
