@@ -88,6 +88,8 @@ public class GLIAAirlines {
         }
         // Toutes les valeurs dans "diffs" doivent être différentes
         model.allDifferent(diffs).post();
+
+       // model.arithm(diffs[0], "<", diffs[diffs.length - 1]).post();
     }
 
     public void configureSearch() {
