@@ -37,3 +37,17 @@ Ce projet a été effectué dans le cadre de l'UE Intelligence Artificielle pour
 - **`-d`** : Cette option doit être utilisé seule
 - **`-a`** : Cette option doit être utilisé seulement si l'option **-c** est présente
 
+## Exemples de Lignes de Commande
+
+1. **Afficher le message d'aide**:  
+`$ java -jar GLIA-Airlines.jar -h`
+2. **Résoudre une instance spécifique (par exemple `inst3`) sans Choco-Solver**:  
+`$ java -jar GLIA-Airlines.jar -i inst3`
+3. **Trouver toutes les solutions pour une instance spécifique avec Choco-Solver (par exemple `inst5`)**:  
+`$ java -jar GLIA-Airlines.jar -c -i inst5 -a`
+4. **Définir une limite de temps (par exemple 5 secondes) pour résoudre une instance spécifique (par exemple `inst4`)**:  
+`$ java -jar GLIA-Airlines.jar -i inst4 -t 5000`
+5. **Résoudre une instance spécifique avec le modèle de contrainte (par exemple `inst2`)**:  
+`$ java -jar GLIA-Airlines.jar -c -i inst2`
+6. **Résoudre toutes les instances sans utiliser le modèle de contrainte**:  
+`$ java -jar GLIA-Airlines.jar -d`
