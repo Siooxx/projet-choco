@@ -44,7 +44,14 @@ public class InstanceDisplay {
 
     private void displayAllInstancesWithConstraints() {
         for (Instance instance : Instance.values()){
-            System.out.print("Instance N°" + instance.toString().charAt(4) + " | ");
+            try {
+                Field field = instance.getClass().getField(instance.name());
+                int index = Arrays.asList(instance.getClass().getFields()).indexOf(field);
+                System.out.print("Instance N°" + String.valueOf(index + 1) + " | ");
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
             (new GLIAAirlines()).solve(instance, Main.timeout, Main.allSolutions);
         }
     }
